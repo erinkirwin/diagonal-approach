@@ -51,21 +51,22 @@ labour.cost = tibble(id=1:rows,total.cost=LC.All)
 
 f.rhs <- c(1,1,1,1,1,1,1,max.labour,input$max.total)
 f.dir <- c("<=","<=","<=","<=","<=","<=","<=","<=","<=")
-f.obj <- NB.All 
+f.obj <- TB.All 
 f.cons <- rbind(t(mydata[c(2:8)]),LC.All,TC.All)
     
 linearprogram<- lp("max", f.obj, f.cons, f.dir, f.rhs, all.bin=TRUE)
-nb<- linearprogram$objval
 sol<- linearprogram$solution
 sol1<-tibble(id=1:rows, x.vector=sol)
 names<-tibble(id=1:rows, names=mydata[,1])
 
 solution<-merge(names, sol1)
 solution1<-merge(solution,total.cost)
-cost=dplyr::count(solution1, id, wt = x.vector*total.cost)
-final.cost = sum(cost$n)
+solution2<-merge(solution1,net.b)
+solution2<-suppressMessages(solution2 %>% filter(x.vector>0))
+net.benefit = sum(solution2$net.b)
+final.cost = sum(solution2$total.cost)
 
-paste("<b>","Net Benefit","</b>",dollar(nb),"<br>","<b>","Total Cost","</b>",dollar(final.cost),"<br>")
+paste("<b>","Net Benefit","</b>",dollar(net.benefit),"<br>","<b>","Total Cost","</b>",dollar(final.cost),"<br>")
 
 })
 
@@ -93,7 +94,7 @@ output$solution = renderTable({
   
   f.rhs <- c(1,1,1,1,1,1,1,max.labour,input$max.total)
   f.dir <- c("<=","<=","<=","<=","<=","<=","<=","<=","<=")
-  f.obj <- NB.All 
+  f.obj <- TB.All 
   f.cons <- rbind(t(mydata[c(2:8)]),LC.All,TC.All)
   
   linearprogram<- lp("max", f.obj, f.cons, f.dir, f.rhs, all.bin=TRUE)
