@@ -8,14 +8,22 @@ ui <- fluidPage(
   sidebarLayout(
   
   sidebarPanel(
-numericInput("max.total","Maximum Expenditure $",150000000, max=200000000, min=100000000 ),
+    fluidRow(column(12,
+numericInput("max.total","Maximum Expenditure $",110000000, max=150000000 ),
 sliderInput("labour.fra","Labour Budget as % of Max", value=0.85, min=0, max=1),
-sliderInput("disc","Discount Rate",value=0.05, min=0, max=1),
+sliderInput("disc","Time Preference Rate",value=0.05, min=0, max=1),
 selectInput("max.yrs","Time Horizon, Years", selected = 3, c("Choose one" = "", 1:3)),
-numericInput("CET","Cost Effectiveness Threshold",200),
-radioButtons("eff","Include Effectiveness Interventions?", choiceNames= c("Yes","No"), choiceValues=c(1,0), inline=TRUE),
-radioButtons("cap","Include Capacity Interventions?", choiceNames= c("Yes","No"), choiceValues=c(1,0), inline=TRUE),
-radioButtons("new","Include New Platform Interventions?",  choiceNames= c("Yes","No"), choiceValues=c(1,0), inline=TRUE))
+numericInput("CET","Cost Effectiveness Threshold",200))),
+
+fluidRow(
+  column(6,
+radioButtons("eff","Efficiency Interventions?", choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE),
+radioButtons("cap","Capacity Interventions?", choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE),
+radioButtons("new","New Platform Interventions?",  choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE)),
+column(6,
+radioButtons("p1","Platform 1 (VMMC, Trauma, HPV)?", choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE),
+radioButtons("p2","Platform 2 (TB2, CVD)?", choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE),
+radioButtons("p3","Platform 3 (VL, Oxy)?",  choiceNames= c("Include","Exclude"), choiceValues=c(1,0), inline=TRUE))))
 ,
 
 mainPanel(
@@ -48,11 +56,12 @@ TC.All = TC.All+mydata$D.New+mydata$D.Eff+mydata$D.Cap
 NB.All = (TB.All*input$CET)-TC.All
 total.cost = tibble(id=1:rows,total.cost=TC.All)
 labour.cost = tibble(id=1:rows,total.cost=LC.All)
+net.b = tibble(id=1:rows,net.b=NB.All)
 
-f.rhs <- c(1,1,1,1,1,1,1,max.labour,input$max.total)
-f.dir <- c("<=","<=","<=","<=","<=","<=","<=","<=","<=")
+f.rhs <- c(input$p1,input$p2,input$p3,max.labour,input$max.total)
+f.dir <- c("<=","<=","<=","<=","<=")
 f.obj <- TB.All 
-f.cons <- rbind(t(mydata[c(2:8)]),LC.All,TC.All)
+f.cons <- rbind(t(mydata[c(2:4)]),LC.All,TC.All)
     
 linearprogram<- lp("max", f.obj, f.cons, f.dir, f.rhs, all.bin=TRUE)
 sol<- linearprogram$solution
@@ -92,10 +101,10 @@ output$solution = renderTable({
   total.cost = tibble(id=1:rows,total.cost=TC.All)
   labour.cost = tibble(id=1:rows,total.cost=LC.All)
   
-  f.rhs <- c(1,1,1,1,1,1,1,max.labour,input$max.total)
-  f.dir <- c("<=","<=","<=","<=","<=","<=","<=","<=","<=")
+  f.rhs <- c(input$p1,input$p2,input$p3,max.labour,input$max.total)
+  f.dir <- c("<=","<=","<=","<=","<=")
   f.obj <- TB.All 
-  f.cons <- rbind(t(mydata[c(2:8)]),LC.All,TC.All)
+  f.cons <- rbind(t(mydata[c(2:4)]),LC.All,TC.All)
   
   linearprogram<- lp("max", f.obj, f.cons, f.dir, f.rhs, all.bin=TRUE)
  sol<-linearprogram$solution
