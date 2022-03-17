@@ -1,5 +1,5 @@
 # diagonal-approach
-Linear programming for implementation of the diagonal appraoch.
+Integer programming for implementation of the diagonal appraoch.
 
 This is an app to provide examples for Chapter 2 of my PhD thesis, published in Social Science and Medicine. 
 
