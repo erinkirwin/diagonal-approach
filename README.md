@@ -1,5 +1,9 @@
-# hhsi-lp
-Linear programming for synthesized horizontal health system intervention optimization
+# diagonal-approach
+Linear programming for implementation of the diagonal appraoch.
 
 
-This is an app to provide examples for Chapter 2 of my PhD thesis. The app demonstrates why a synthesized HSSI optimization is required, and demonstrates how sub-optimal allocation ocurrs when one type of HSSI is not considered, or when different types of HSSI are evaluated seperately.
+This is an app to provide examples for Chapter 2 of my PhD thesis, published in Social Science and Medicine. 
+
+https://www.sciencedirect.com/science/article/abs/pii/S0277953622002064
+
+The app demonstrates why the diagonal health system equation is required, and can be used to demonstrate how sub-optimal allocation ocurrs when one type of horizontal interventions is not considered, or when different types of horizontal interventions are evaluated seperately.
